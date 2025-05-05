@@ -1,18 +1,17 @@
-# 1) Start from the official Node.js 18 Alpine image (small footprint)
 FROM node:18-alpine
 
-# 2) Set working directory inside the container
+# Working directory 
 WORKDIR /app
 
-# 3) Copy dependency manifests and install production deps
+# Copy package.json and install dependencies
 COPY package.json package-lock.json ./
 RUN npm ci --only=production
 
-# 4) Copy your source code
+# Copy your source code
 COPY src/ ./src/
 
-# 5) Expose the port your app listens on
+# Expose the port 3000
 EXPOSE 3000
 
-# 6) Default command to run your server
+# Command to run web service
 CMD ["node", "src/index.js"]
