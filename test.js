@@ -1,11 +1,3 @@
-import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
-
-const app = express();
-app.use(express.json());
-
-const receipts = new Map();
-
 function calculatePoints(receipt) {
     const { retailer, purchaseDate, purchaseTime, total, items } = receipt;
     let points = 0;
@@ -47,25 +39,29 @@ function calculatePoints(receipt) {
     return points;
 }
 
-// POST 
-app.post('/receipts/process', (req, res) => {
-  const receipt = req.body;
-  // TODO: validate against your schema
-  const id = uuidv4();
-  receipts.set(id, receipt);
-  res.json({ id });
-});
+const example = {
+    "retailer": "M&M Corner Market",
+    "purchaseDate": "2022-03-20",
+    "purchaseTime": "14:33",
+    "items": [
+      {
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+      },{
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+      },{
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+      },{
+        "shortDescription": "Gatorade",
+        "price": "2.25"
+      }
+    ],
+    "total": "9.00"
+  };
+  
+console.log(calculatePoints(example)); // 15
 
-// GET /receipts/:id/points
-app.get('/receipts/:id/points', (req, res) => {
-  const receipt = receipts.get(req.params.id);
-  if (!receipt) return res.status(404).json({ error: 'Not Found' });
-  const points = calculatePoints(receipt);
-
-  res.json({ points });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Listening on http://localhost:${PORT}`);
-});
+//localhost:3000/receipts/process
+//localhost:3000/receipts/f8eb378d-e845-4643-927c-a571dbd7d89f/points
